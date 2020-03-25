@@ -1,4 +1,4 @@
-import discord, os
+import discord, os, asyncio, math
 from discord.ext import commands
 
 bot = commands.Bot(command_prefix='v!', fetch_offline_members=True)
@@ -12,13 +12,16 @@ async def on_ready():
     bot.load_extension("cogs.fetch_config_file")
 
     while bot.config_file == None:
-        do_nothing = True
+        await asyncio.sleep(0.05)
 
     cogs_list = ["cogs.infected_cmds", "cogs.etc_cmds", "cogs.tasks"
     "cogs.on_mes_infect", "cogs.scientist_cmds"]
 
     for cog in cogs_list:
         bot.load_extension(cog)
+
+    bot.cure_progress = 0
+    bot.started = False
 
     print('Logged in as')
     print(bot.user.name)
@@ -29,8 +32,14 @@ async def on_ready():
     await bot.change_presence(activity = activity)
     
 @bot.check
-async def block_dms(ctx):
-    return ctx.guild is not None
+async def global_block(ctx):
+    if ctx.guild is None:
+        return False
+    elif bot.started == False:
+        if ctx.invoked_with == "start_game":
+            return True
+
+    return False
 
 async def on_command_error(ctx, error):
     if isinstance(error, commands.CommandInvokeError):
@@ -43,6 +52,16 @@ async def on_command_error(ctx, error):
             await ctx.send(f"{owner.mention}: {original}")
     elif isinstance(error, commands.ArgumentParsingError):
         await ctx.send(error)
+    elif isinstance(error, commands.CommandOnCooldown):
+        time_to_wait = math.ceil(error.retry_after)
+        await ctx.send(f"You're doing that command too fast! Try again after {time_to_wait} seconds.")
+    elif isinstance(error, commands.CheckFailure):
+        await ctx.send(
+            "This command has failed! Most likely, it's because you're not in the bot arcades, this is a DM, or " +
+            "the game has not started yet."
+        )
+    elif isinstance(error, commands.MissingRole):
+        await ctx.send("You do not have the correct role to do that!")
     else:
         print(error)
         

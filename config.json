@@ -1,9 +1,9 @@
 {
-    "countdowns": {
-       "hug": 2,
-       "travel": 20,
-       "work": 20,
-       "cure": 2
+    "cooldowns": {
+       "hug": 120,
+       "travel": 1200,
+       "work": 300,
+       "cure": 120
     },
     "chances": {
         "on_mes": {
@@ -12,7 +12,7 @@
             "c": -0.0075,
             "mask_modify": 0.65
         },
-        "hug": 0.15,
+        "hug": 0.25,
         "travel": 0.15,
         "work": {
             "min": 0.01,
@@ -21,8 +21,11 @@
         },
         "cure": 0.85
     },
+    "travel_count": 15,
+    "mask_multiplier": 0.65,
     "infect_channels": [692191458047819809, 692191724763611156, 692191747970695170],
     "bot_channels": [692191724763611156, 692191747970695170],
+    "guild": 692191457574125608,
     "log_channel": 692207244330139709,
     "roles": {
         "dead": 692192439976591400,
