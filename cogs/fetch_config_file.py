@@ -20,6 +20,7 @@ class FetchConfigFile(commands.Cog):
         config_file["chances"] = document["chances"]
         config_file["travel_count"] = document["travel_count"]
         config_file["mask_multiplier"] = document["mask_multiplier"]
+        config_file["death_chance"] = document["death_chance"]
         config_file["infect_channels"] = document["infect_channels"]
         config_file["bot_channels"] = document["bot_channels"]
 
