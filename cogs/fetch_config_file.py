@@ -1,5 +1,5 @@
 from discord.ext import commands, tasks
-import discord, aiohttp, numpy
+import discord, aiohttp, numpy, os
 
 class FetchConfigFile(commands.Cog):
     def __init__(self, bot):
@@ -8,7 +8,7 @@ class FetchConfigFile(commands.Cog):
 
     @tasks.loop(minutes=2.5)
     async def fetch_document(self):
-        document_url = "https://raw.githubusercontent.com/Sonic4999/BappoRealmVirusBot/master/config.json"
+        document_url = os.environ.get("DOCUMENT_URL")
         document = {}
         config_file = {}
 
