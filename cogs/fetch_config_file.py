@@ -1,12 +1,12 @@
 from discord.ext import commands, tasks
-import discord, aiohttp
+import discord, aiohttp, numpy
 
 class FetchConfigFile(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.fetch_document.start()
 
-    @tasks.loop(minutes=5.0)
+    @tasks.loop(minutes=2.5)
     async def fetch_document(self):
         document_url = "https://raw.githubusercontent.com/Sonic4999/BappoRealmVirusBot/master/config.json"
         document = {}
@@ -18,13 +18,26 @@ class FetchConfigFile(commands.Cog):
 
         config_file["cooldowns"] = document["cooldowns"]
         config_file["chances"] = document["chances"]
+
+        config_file["chances"]["on_mes"]["equation"] = numpy.polyfit(
+            document["chances"]["on_mes"]["x"],
+            document["chances"]["on_mes"]["y"],
+            2
+        )
+        config_file["chances"]["death"]["equation"] = numpy.polyfit(
+            document["chances"]["death"]["x"],
+            document["chances"]["death"]["y"],
+            2
+        )
+
         config_file["travel_count"] = document["travel_count"]
         config_file["mask_multiplier"] = document["mask_multiplier"]
-        config_file["death_chance"] = document["death_chance"]
         config_file["infect_channels"] = document["infect_channels"]
         config_file["bot_channels"] = document["bot_channels"]
 
-        guild = self.bot.get_guild(document["guild"])
+        config_file["guild"] = self.bot.get_guild(document["guild"])
+        guild = config_file["guild"]
+
         config_file["log_channel"] = guild.get_channel(document["log_channel"])
 
         config_file["roles"] = {}

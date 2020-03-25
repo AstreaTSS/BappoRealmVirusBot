@@ -12,7 +12,7 @@ async def on_ready():
     bot.load_extension("cogs.fetch_config_file")
 
     while bot.config_file == None:
-        await asyncio.sleep(0.05)
+        do_nothing = True
 
     cogs_list = ["cogs.infected_cmds", "cogs.etc_cmds", "cogs.tasks"
     "cogs.on_mes_infect", "cogs.scientist_cmds"]
@@ -38,8 +38,9 @@ async def global_block(ctx):
     elif bot.started == False:
         if ctx.invoked_with == "start_game":
             return True
-
-    return False
+        return False
+        
+    return True
 
 async def on_command_error(ctx, error):
     if isinstance(error, commands.CommandInvokeError):
