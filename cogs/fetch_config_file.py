@@ -14,7 +14,7 @@ class FetchConfigFile(commands.Cog):
 
         async with aiohttp.ClientSession() as session:
             async with session.get(document_url) as resp:
-                document = await resp.json()
+                document = await resp.json(content_type='text/plain')
 
         config_file["cooldowns"] = document["cooldowns"]
         config_file["chances"] = document["chances"]
