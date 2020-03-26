@@ -1,10 +1,8 @@
 from discord.ext import commands
 import discord, random
+from cogs.checks import check_cooldown, check_for_channel, check_for_role
 
 config_file = {}
-
-def check_for_channel(ctx):
-    return ctx.channel.id in config_file["bot_channels"]
 
 class ScientistCMDS(commands.Cog):
     global config_file
@@ -25,9 +23,9 @@ class ScientistCMDS(commands.Cog):
         return False
 
     @commands.command()
-    @commands.has_role(config_file["roles"]["scientist"])
+    @commands.check(check_for_role)
     @commands.check(check_for_channel)
-    @commands.cooldown(1, config_file["cooldowns"]["work"], commands.BucketType.user)
+    @commands.check(check_cooldown)
     async def work(self, ctx):
         global config_file
 
@@ -59,9 +57,9 @@ class ScientistCMDS(commands.Cog):
             await ctx.send("You already have completed the cure! Use `v!cure` to cure people!")
 
     @commands.command()
-    @commands.has_role(config_file["roles"]["scientist"])
+    @commands.check(check_for_role)
     @commands.check(check_for_channel)
-    @commands.cooldown(1, config_file["cooldowns"]["cure"], commands.BucketType.user)
+    @commands.check(check_cooldown)
     async def cure(self, ctx):
         global config_file
 

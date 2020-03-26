@@ -1,20 +1,21 @@
-import discord, os, asyncio, math
+import discord, os, asyncio, math, datetime
 from discord.ext import commands
+from cogs.checks import check_cooldown, check_for_channel, check_for_role
 
 bot = commands.Bot(command_prefix='v!', fetch_offline_members=True)
-
 bot.remove_command("help")
 
 @bot.event
 async def on_ready():
 
     bot.config_file = None
+    bot.user_cooldowns = {}
     bot.load_extension("cogs.fetch_config_file")
 
     while bot.config_file == None:
-        do_nothing = True
+        await asyncio.sleep(0.1)
 
-    cogs_list = ["cogs.infected_cmds", "cogs.etc_cmds", "cogs.tasks"
+    cogs_list = ["cogs.infected_cmds", "cogs.etc_cmds", "cogs.tasks",
     "cogs.on_mes_infect", "cogs.scientist_cmds"]
 
     for cog in cogs_list:
@@ -42,6 +43,7 @@ async def global_block(ctx):
         
     return True
 
+@bot.event
 async def on_command_error(ctx, error):
     if isinstance(error, commands.CommandInvokeError):
         original = error.original
@@ -53,16 +55,25 @@ async def on_command_error(ctx, error):
             await ctx.send(f"{owner.mention}: {original}")
     elif isinstance(error, commands.ArgumentParsingError):
         await ctx.send(error)
-    elif isinstance(error, commands.CommandOnCooldown):
-        time_to_wait = math.ceil(error.retry_after)
-        await ctx.send(f"You're doing that command too fast! Try again after {time_to_wait} seconds.")
     elif isinstance(error, commands.CheckFailure):
-        await ctx.send(
-            "This command has failed! Most likely, it's because you're not in the bot arcades, this is a DM, or " +
-            "the game has not started yet."
-        )
-    elif isinstance(error, commands.MissingRole):
-        await ctx.send("You do not have the correct role to do that!")
+        if not check_for_role(ctx):
+            await ctx.send("You do not have the proper role to do that!")
+        elif not check_cooldown(ctx):
+            current_time = datetime.datetime.utcnow().timestamp()
+            available_at = bot.user_cooldowns[ctx.author][ctx.invoked_with] + ctx.bot.config_file["cooldowns"][ctx.invoked_with]
+
+            secs_till = math.ceil(available_at - current_time)
+
+            if secs_till < 60:
+                await ctx.send(f"You need to wait {secs_till} second(s) until you can run that command again!")
+            else:
+                mins_till = math.floor(secs_till / 60)
+                secs_till -= mins_till * 60
+
+                minute_plural = "minute" if mins_till == 1 else "minutes"
+                second_plural = "second" if secs_till == 1 else "seconds"
+
+                await ctx.send(f"You need to wait {mins_till} {minute_plural} and {secs_till} {second_plural} until you can run that command again!")
     else:
         print(error)
         

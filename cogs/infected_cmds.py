@@ -1,10 +1,8 @@
 from discord.ext import commands
 import discord, random
+from cogs.checks import check_cooldown, check_for_channel, check_for_role
 
 config_file = {}
-
-def check_for_channel(ctx):
-    return ctx.channel.id in config_file["bot_channels"]
 
 class InfectedCMDS(commands.Cog):
     global config_file
@@ -13,7 +11,7 @@ class InfectedCMDS(commands.Cog):
         global config_file
 
         self.bot = bot
-        config_file = bot.config_file
+        config_file = self.bot.config_file
 
     def check_for_roles(self, member):
         global config_file
@@ -29,9 +27,9 @@ class InfectedCMDS(commands.Cog):
         return True
 
     @commands.command()
-    @commands.has_role(config_file["roles"]["infected"])
+    @commands.check(check_for_role)
     @commands.check(check_for_channel)
-    @commands.cooldown(1, config_file["cooldowns"]["hug"], commands.BucketType.user)
+    @commands.check(check_cooldown)
     async def hug(self, ctx):
         global config_file
 
@@ -83,9 +81,9 @@ class InfectedCMDS(commands.Cog):
         
 
     @commands.command()
-    @commands.has_role(config_file["roles"]["infected"])
+    @commands.check(check_for_role)
     @commands.check(check_for_channel)
-    @commands.cooldown(1, config_file["cooldowns"]["travel"], commands.BucketType.user)
+    @commands.check(check_cooldown)
     async def travel(self, ctx):
         global config_file
 
@@ -128,7 +126,6 @@ class InfectedCMDS(commands.Cog):
                 await config_file["log_channel"].send(embed = success_embed)
         else:
             await ctx.send("Everyone has already been infected!")
-
 
 def setup(bot):
     bot.add_cog(InfectedCMDS(bot))
