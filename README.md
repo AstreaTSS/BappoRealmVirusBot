@@ -1,3 +1,3 @@
 # BappoRealmVirusBot
 
-Environment vars: MAIN_TOKEN, DOCUMENT_URL
+Environment vars: MAIN_TOKEN, CONFIG_URL

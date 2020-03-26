@@ -8,7 +8,7 @@ class FetchConfigFile(commands.Cog):
 
     @tasks.loop(minutes=2.5)
     async def fetch_document(self):
-        document_url = os.environ.get("DOCUMENT_URL")
+        document_url = os.environ.get("CONFIG_URL")
         document = {}
         config_file = {}
 

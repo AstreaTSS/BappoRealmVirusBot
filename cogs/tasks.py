@@ -23,8 +23,7 @@ class Tasks(commands.Cog):
             guild = config_file["guild"]
 
             pop = [
-                member
-                for member in guild.members
+                member for member in guild.members
                 if not member.bot and not config_file["roles"]["immune"] in member.roles
             ]
 
@@ -65,8 +64,7 @@ class Tasks(commands.Cog):
             guild = config_file["guild"]
 
             infected = [
-                member
-                for member in guild.members
+                member for member in guild.members
                 if not member.bot and not config_file["roles"]["infected"] in member.roles
             ]
 
@@ -85,7 +83,8 @@ class Tasks(commands.Cog):
                         prob = a + b + c
 
                         if prob <= random.random():
-                            member.add_roles(self.bot.config_file["roles"]["infected"])
+                            member.add_roles(self.bot.config_file["roles"]["dead"])
+                            member.remove_roles(self.bot.config_file["roles"]["infected"])
                             infect_embed = discord.Embed (
                                 title = "Oh no...", 
                                 colour = discord.Colour.darker_grey(),
