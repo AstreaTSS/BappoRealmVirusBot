@@ -1,6 +1,6 @@
 import discord, os, asyncio, math, datetime
 from discord.ext import commands
-from cogs.checks import check_cooldown, check_for_channel, check_for_role
+import cogs.checks
 
 bot = commands.Bot(command_prefix='v!', fetch_offline_members=True)
 bot.remove_command("help")
@@ -56,9 +56,11 @@ async def on_command_error(ctx, error):
     elif isinstance(error, commands.ArgumentParsingError):
         await ctx.send(error)
     elif isinstance(error, commands.CheckFailure):
-        if not check_for_role(ctx):
+        if not cogs.checks.check_for_role(ctx):
             await ctx.send("You do not have the proper role to do that!")
-        elif not check_cooldown(ctx):
+        elif not cogs.checks.check_for_channel(ctx):
+            "do nothing"
+        elif not cogs.checks.check_cooldown(ctx):
             current_time = datetime.datetime.utcnow().timestamp()
             available_at = bot.user_cooldowns[ctx.author][ctx.invoked_with] + ctx.bot.config_file["cooldowns"][ctx.invoked_with]
 
@@ -74,6 +76,12 @@ async def on_command_error(ctx, error):
                 second_plural = "second" if secs_till == 1 else "seconds"
 
                 await ctx.send(f"You need to wait {mins_till} {minute_plural} and {secs_till} {second_plural} until you can run that command again!")
+        else:
+            print(error)
+        
+            application = await ctx.bot.application_info()
+            owner = application.owner
+            await ctx.send(f"{owner.mention}: {error}")
     else:
         print(error)
         

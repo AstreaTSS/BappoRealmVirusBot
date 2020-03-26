@@ -1,6 +1,6 @@
 from discord.ext import commands
 import discord, random
-from cogs.checks import check_cooldown, check_for_channel, check_for_role
+import cogs.checks
 
 config_file = {}
 
@@ -27,9 +27,9 @@ class InfectedCMDS(commands.Cog):
         return True
 
     @commands.command()
-    @commands.check(check_for_role)
-    @commands.check(check_for_channel)
-    @commands.check(check_cooldown)
+    @commands.check(cogs.checks.check_for_role)
+    @commands.check(cogs.checks.check_for_channel)
+    @commands.check(cogs.checks.check_cooldown)
     async def hug(self, ctx):
         global config_file
 
@@ -81,9 +81,9 @@ class InfectedCMDS(commands.Cog):
         
 
     @commands.command()
-    @commands.check(check_for_role)
-    @commands.check(check_for_channel)
-    @commands.check(check_cooldown)
+    @commands.check(cogs.checks.check_for_role)
+    @commands.check(cogs.checks.check_for_channel)
+    @commands.check(cogs.checks.check_cooldown)
     async def travel(self, ctx):
         global config_file
 

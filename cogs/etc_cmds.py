@@ -45,7 +45,7 @@ class ETCCMDS(commands.Cog):
         stats_embed.add_field(name="Total Cured", value=f"{len(cured)}", inline=True)
         stats_embed.add_field(name="Total Scientist", value=f"{len(scientists)}", inline=True)
         stats_embed.add_field(name="Total Masked", value=f"{len(masked)}", inline=True)
-        stats_embed.add_field(name="Cure Progress", value=f"{self.bot.cure_progress * 100}%", inline=True)
+        stats_embed.add_field(name="Cure Progress", value=f"{round(self.bot.cure_progress * 100, 2)}%", inline=True)
 
         await ctx.send(embed = stats_embed)
 

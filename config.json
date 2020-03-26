@@ -1,9 +1,9 @@
 {
     "cooldowns": {
        "hug": 120,
-       "travel": 1200,
+       "travel": 600,
        "work": 300,
-       "cure": 120
+       "cure": 180
     },
 
     "chances": {
@@ -12,8 +12,8 @@
             "y": [0.005, 0.05, 0.25],
             "mask_modify": 0.65
         },
-        "hug": 0.25,
-        "travel": 0.15,
+        "hug": 0.3,
+        "travel": 0.2,
         "work": {
             "min": 0.01,
             "max": 0.1,
@@ -21,14 +21,14 @@
         },
         "cure": 0.85,
         "death": {
-            "x": [30, 60, 120],
+            "x": [30, 45, 60],
             "y": [0, 0.02, 0.2],
             "start": 30,
-            "limit": 120
+            "limit": 60
         }
     },
 
-    "travel_count": 15,
+    "travel_count": 10,
     "mask_multiplier": 0.65,
 
     "infect_channels": [692191458047819809, 692191724763611156, 692191747970695170],

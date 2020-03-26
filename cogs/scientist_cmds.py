@@ -1,6 +1,6 @@
 from discord.ext import commands
 import discord, random
-from cogs.checks import check_cooldown, check_for_channel, check_for_role
+import cogs.checks
 
 config_file = {}
 
@@ -23,25 +23,25 @@ class ScientistCMDS(commands.Cog):
         return False
 
     @commands.command()
-    @commands.check(check_for_role)
-    @commands.check(check_for_channel)
-    @commands.check(check_cooldown)
+    @commands.check(cogs.checks.check_for_role)
+    @commands.check(cogs.checks.check_for_channel)
+    @commands.check(cogs.checks.check_cooldown)
     async def work(self, ctx):
         global config_file
 
         if self.bot.cure_progress != 1:
-            cure_add = random.uniform(config_file["chances"]["work"]["min"], config_file["chances"]["work"]["max"])
+            cure_add = round(random.uniform(config_file["chances"]["work"]["min"], config_file["chances"]["work"]["max"]), 4)
 
             if config_file["roles"]["infected"] in ctx.author.roles:
-                cure_add = round(cure_add / config_file["chances"]["work"]["infect_divide"], 2)
+                cure_add = round(cure_add / config_file["chances"]["work"]["infect_divide"], 4)
 
-            self.bot.cure_progress = 1 if self.bot.cure_progress + cure_add >= 1 else self.bot.cure_progress + cure_add
+            self.bot.cure_progress = 1 if self.bot.cure_progress + cure_add >= 1 else round(self.bot.cure_progress + cure_add, 4)
 
             if self.bot.cure_progress < 1:
                 cure_embed = discord.Embed (
                     title = "Cure Progress", 
                     colour = discord.Colour.blue(),
-                    description = f"The cure is at {self.bot.cure_progress * 100}%"
+                    description = f"The cure is at {round(self.bot.cure_progress * 100, 2)}%"
                 )
                 await ctx.send(embed = cure_embed)
                 await config_file["log_channel"].send(embed = cure_embed)
@@ -49,7 +49,7 @@ class ScientistCMDS(commands.Cog):
                 final_cure_embed = discord.Embed (
                     title = "Cure Progress", 
                     colour = discord.Colour.green(),
-                    description = f"The cure is at {self.bot.cure_progress * 100}%! Scientists can now use the `v!cure` command!"
+                    description = f"The cure is at {round(self.bot.cure_progress * 100, 2)}%! Scientists can now use the `v!cure` command!"
                 )
                 await ctx.send(embed = final_cure_embed)
                 await config_file["log_channel"].send(embed = final_cure_embed)
@@ -57,9 +57,9 @@ class ScientistCMDS(commands.Cog):
             await ctx.send("You already have completed the cure! Use `v!cure` to cure people!")
 
     @commands.command()
-    @commands.check(check_for_role)
-    @commands.check(check_for_channel)
-    @commands.check(check_cooldown)
+    @commands.check(cogs.checks.check_for_role)
+    @commands.check(cogs.checks.check_for_channel)
+    @commands.check(cogs.checks.check_cooldown)
     async def cure(self, ctx):
         global config_file
 
