@@ -28,7 +28,7 @@ class ETCCMDS(commands.Cog):
         pop = [
             member
             for member in ctx.guild.members
-            if not member.bot and not config_file["roles"]["immune"] in member.roles
+            if not config_file["roles"]["immune"] in member.roles
         ]
         infected = [member for member in pop if config_file["roles"]["infected"] in member.roles]
         dead = [member for member in pop if config_file["roles"]["dead"] in member.roles]
