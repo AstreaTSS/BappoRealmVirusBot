@@ -18,6 +18,8 @@ class OnMesInfect(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, mes):
+        if mes.guild == None:
+            return
         if self.check_for_roles(mes.author) or self.bot.started == False:
             return
         elif mes.channel.id in self.bot.config_file["infect_channels"]:
@@ -49,7 +51,7 @@ class OnMesInfect(commands.Cog):
                         colour = discord.Colour.red(),
                         description = f"{mes.author.mention} has been infected!"
                     )
-                    await mes.send(embed = infect_embed)
+                    await mes.channel.send(embed = infect_embed)
                     await self.bot.config_file["log_channel"].send(embed = infect_embed)
 
 def setup(bot):
