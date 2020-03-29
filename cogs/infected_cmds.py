@@ -40,7 +40,7 @@ class InfectedCMDS(commands.Cog):
 
             if not config_file["roles"]["masked"] in ctx.author.roles:
                 if config_file["chances"]["hug"] <= random.random():
-                    hugged_member.add_roles(config_file["roles"]["infected"])
+                    await hugged_member.add_roles(config_file["roles"]["infected"])
 
                     success_embed = discord.Embed (
                         title = "Success!", 
@@ -56,7 +56,7 @@ class InfectedCMDS(commands.Cog):
                     return
             else:
                 if (config_file["chances"]["hug"] * config_file["mask_multiplier"]) <= (random.random()):
-                    hugged_member.add_roles(config_file["roles"]["infected"])
+                    await hugged_member.add_roles(config_file["roles"]["infected"])
 
                     success_embed = discord.Embed (
                         title = "Success!", 
@@ -113,7 +113,8 @@ class InfectedCMDS(commands.Cog):
                 )
                 await ctx.send(embed = failed_embed)
             else:
-                list_of_infected = ", ".join(actual_infected)
+                names_of_infected = [m.mention for m in actual_infected]
+                list_of_infected = ", ".join(names_of_infected)
                 success_embed = discord.Embed (
                     title = "Success!", 
                     colour = discord.Colour.green(),
