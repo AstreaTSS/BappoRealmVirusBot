@@ -18,7 +18,7 @@ class OnMesInfect(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, mes):
-        if mes.author.bot or self.check_for_roles(mes.author) or self.bot.started == False:
+        if self.check_for_roles(mes.author) or self.bot.started == False:
             return
         elif mes.channel.id in self.bot.config_file["infect_channels"]:
             authors = [
